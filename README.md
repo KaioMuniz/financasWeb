@@ -1,59 +1,167 @@
-# FinancasWeb
+# FinancasWeb processos da criação do projeto
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.2.
+npm i -g @angular/cli@20
 
-## Development server
+ng version
 
-To start a local development server, run:
+ng new financasWeb
 
-```bash
-ng serve
-```
+cd financasWeb
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+npm i --save bootstrap
 
-## Code scaffolding
+code .
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+ng s -o
 
-```bash
-ng generate component component-name
-```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+=============================================
 
-```bash
-ng generate --help
-```
+            "styles": [
+              "src/styles.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css"
+            ],
+            "scripts": [
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+            ]
 
-## Building
+=============================================
 
-To build the project run:
+<router-outlet/> 
 
-```bash
-ng build
-```
+=============================================
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+ng g c pages/criar-usuario --skip-tests
 
-## Running unit tests
+ng g c pages/autenticar-usuario --skip-tests
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+=============================================
 
-```bash
-ng test
-```
 
-## Running end-to-end tests
+import { Routes } from '@angular/router';
+import { AutenticarUsuario } from './pages/autenticar-usuario/autenticar-usuario';
+import { CriarUsuario } from './pages/criar-usuario/criar-usuario';
 
-For end-to-end (e2e) testing, run:
+export const routes: Routes = [
+    {
+        path: 'autenticar', component: AutenticarUsuario
+    },
+    {
+        path: 'criar-usuario', component: CriarUsuario
+    },
+    {
+        path: '', pathMatch: 'full', redirectTo: '/autenticar'
+    }
+];
 
-```bash
-ng e2e
-```
+=============================================
+fiz o html do componente authenticar:
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+"ChatGPT, pode criar um HTML estilizado com Bootstrap que tenha uma tela de login centralizada com logo, título, e campos de e-mail e senha, igual ao exemplo abaixo?"
 
-## Additional Resources
+=============================================
+fiz o formulario par receber os dados da api java:
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-autenticar-usuario',
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule
+  ],
+  templateUrl: './autenticar-usuario.html',
+  styleUrl: './autenticar-usuario.css'
+})
+export class AutenticarUsuario {
+
+  //Estrutura de formulário
+  form = new FormGroup({
+    email : new FormControl(''),
+    senha : new FormControl('')
+  });
+
+  //Função para capturar o SUBMIT do formulário
+  onSubmit() {
+    
+  }
+
+}
+
+=============================================
+no html do authenticar:
+
+formControlName="senha"   linha 17
+
+formControlName="email"   linha 28
+
+=============================================
+na api , no spring montei o cors:
+
+   package br.com.cotiinformatica.configurations;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+@EnableWebMvc
+public class CorsConfiguration implements WebMvcConfigurer {
+
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		
+		registry.addMapping("/**")
+			.allowedOrigins("http://localhost:4200")
+			.allowedMethods("POST", "PUT", "DELETE", "GET")
+			.allowedHeaders("*");
+	}
+}
+
+=============================================
+adicionei no app.config.ts o
+
+provideHttpClient()
+
+=============================================
+depois atualizei o ts do auth usuario
+
+import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Component, inject } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-autenticar-usuario',
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule
+  ],
+  templateUrl: './autenticar-usuario.html',
+  styleUrl: './autenticar-usuario.css'
+})
+export class AutenticarUsuario {
+
+  //Injeção de dependência
+  http = inject(HttpClient);
+
+  //Estrutura de formulário
+  form = new FormGroup({
+    email : new FormControl(''),
+    senha : new FormControl('')
+  });
+
+  //Função para capturar o SUBMIT do formulário
+  onSubmit() {
+    this.http.post('http://localhost:8082/api/v1/usuario/autenticar', this.form.value)
+      .subscribe((response) => {
+        console.log(response);
+      })
+  }
+
+}

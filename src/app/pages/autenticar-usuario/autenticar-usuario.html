@@ -1,0 +1,42 @@
+<div class="d-flex align-items-center justify-content-center vh-100 bg-light">
+  <div class="card shadow p-4" style="width: 24rem;">
+    
+    <img class="text-center" src="https://www.cotiinformatica.com.br/imagens/logo-coti-informatica.svg"/>
+    
+    <h2 class="text-center mb-1">Finanças Web</h2>
+    <p class="text-center mb-1">Autenticação de usuários</p>
+    
+    <hr/>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        
+      <div class="mb-3">
+        <label for="emailInput" class="form-label">E-mail</label>
+        <input
+          type="email"
+          formControlName="email"
+          class="form-control"
+          id="emailInput"
+          placeholder="Digite seu e-mail"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="passwordInput" class="form-label">Senha</label>
+        <input
+          type="password"
+          formControlName="senha"
+          class="form-control"
+          id="passwordInput"
+          placeholder="Digite sua senha"
+        />
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 mb-3">Entrar</button>
+
+      <div class="text-center">
+        <a href="#" class="text-decoration-none">Criar conta</a>
+      </div>
+    </form>
+  </div>
+</div>
